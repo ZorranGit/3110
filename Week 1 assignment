@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo "Hello! The date and time is $(date)" #A polite greeting letting them know what time and date it is, useful if used for logging purposes
+echo "The current hostname of the machine is: $(hostname)" #This gives the user the hostname of the current machine
+
+read -p "Give me a url to download: " url               #Saves the URL as a variable
+wget -q $url                                            #These 2 lines are for downloading the file given from the url
+
+echo "Column $2 for machine $1 is: "                    
+cat have_found.txt | grep $1 | awk '{print $v1}' v1=$2          #THis will cat the file we are given which in this case is have_found.txt greps it for variable/arguement two arguement for the name and prints the column defined by variable/arguement one
