@@ -1,25 +1,31 @@
 #!/bin/bash
 
-read -p $'What want?! \n 1-Test if host is awake \n 2-Get pres status on remote host \n 3-Get disk percentage used on root filesystem \n 4-Get Hostname of remote machine \n 5-Get the current time on remote machine \n :' sel
+read -p $'What want?! \n 1-Test if host is awake \n 2-Get pres status of service on remote host \n 3-Get disk percentage used on root filesystem \n 4-Get Hostname of remote machine \n 5-Get the current time on remote machine \n :' sel
 
-if [[ $sel = 1 ]]    #If selected will tell the user if host is awake
+if [[ $sel = 1 ]]
 then
         if ping $1 -c 1 >/dev/null; then
                 echo "$1 is awake"
         else
                 echo "Failure, $1 is asleep"
         fi
-elif [[ $sel = 2 ]]     #If selected will get the status of a service that is given 
+elif [[ $sel = 2 ]]
 then
         read -p $'What service would you like to check? \n :' serv
-        echo "The service $serv is $(ssh $1 service $serv status | grep -m 1 Active: | awk {'print $2'})"
-elif [[ $sel = 3 ]]     #Gets the disk percentage used on root of the machine
+        result=$(ssh $1 service $serv status 2>/dev/null | grep -m 1 Active: | awk {'print $2'})
+        if [[ $result = 'active' ]]
+        then
+                echo "The service $serv is active"
+        else
+                echo "The service $serv is not active"
+        fi
+elif [[ $sel = 3 ]]
 then
         echo "The disk percentage on root file system of remote machine is $(ssh $1 df | egrep '/$' | awk {'print $5'})"
-elif [[ $sel = 4 ]]     #Gets the hostname of the remote machine if chosen
+elif [[ $sel = 4 ]]
 then
         echo "The hostname of the machine is $(ssh $1 hostname)"
-elif [[ $sel = 5 ]]     #Gets the time and date on the remote machine
+elif [[ $sel = 5 ]]
 then
         echo "The time on the remote machine is: $(ssh $1 date)" 
 fi
