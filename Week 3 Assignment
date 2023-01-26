@@ -1,0 +1,41 @@
+#!/bin/bash
+count=10
+con="Y"
+while (( count>=0 ))
+do
+        if (( count==9 ))
+        then
+                echo "Donavan"
+        elif (( count==8 ))
+        then
+                echo "File Created"
+                touch eight.txt
+        elif (( count==7 ))
+        then
+                cat /etc/passwd | grep 1000 | awk -F ":" '{ print $1 }'
+        elif (( count==6 ))
+        then
+                who
+        elif (( count==5 ))
+        then
+                ls
+        elif (( count==3 ))
+        then
+                echo "danger,danger,danger"
+        elif (( count==2 ))
+        then
+                read -p "Want to continue? Y or N" con
+        elif (( count==1 )) && [[ $con == "Y" ]]
+        then
+                tail -1 text.txt
+        elif (( count==0 )) && [[ $con == "Y" ]]
+        then
+                echo "Blast off!"
+        fi
+        sleep 1
+        ((count-=1))
+        if (( $count != -1 )) && [[ $con == "Y" ]]
+        then
+                echo $count
+        fi
+done
