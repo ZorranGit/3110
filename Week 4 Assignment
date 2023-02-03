@@ -1,0 +1,89 @@
+#!/bin/bash
+
+#Change to your user
+user=d00417722
+
+#this function will get a list of vlans back for you
+function get_vlans()
+{
+  vlans=""
+  courses=$(ssh $user@vm "/qemu/bin/citv courses")
+  #echo $courses
+  for c in $courses
+  do
+    network=$(ssh $user@vm "/qemu/bin/citv getip $c")
+    vlan=$(echo $network | awk '{ print $14 }' | sed 's/\.//')
+    vlans+=$vlan" "
+  done
+
+}
+
+#Gets the ram from the user and validates
+function get_ram()
+{
+        ram=0
+        while [ $ram -eq 0 ]
+        do
+                read -p "How much ram? (in mb)(512/1024)" r
+                ([ $r -eq 512 ] || [ $r -eq 1024 ]) && ram=$r ||  echo "invalid"
+        done
+}
+
+#Gets the disk size from user within the vm farms limit and validates
+function get_disk_size()
+{
+        diskS=0
+        while [ $diskS -eq 0 ]
+        do
+                read -p "How big of a disk? (In GB) (8/16/32)" d
+                ([ $d -eq 8 ] || [ $d -eq 16 ] || [ $d -eq 32 ]) && diskS=$d || echo "invalid"
+        done
+}
+
+#Grabs the vlan the user wants and validates
+function vlan_grabber()
+{
+        vlantest=0
+        while [ $vlantest -eq 0 ]
+        do
+                read -p "What vlan do you want to use? ($vlans)" thing
+                for vlan in $vlans
+                do
+                        if [ $vlan == $thing ]
+                        then
+                                ch=$thing
+                                vlantest=1
+                        fi
+                done
+        done
+}
+
+function usage()
+{
+        echo "./vmcreator.sh <machine name>"
+}
+get_vlans
+going=0
+
+if [ -z "$1" ]
+then
+        usage
+else
+        while [ $going -eq 0 ]
+        do
+                vlan_grabber
+                if [[ ""$vlans"" == *"$ch"* ]]
+                then
+                        get_ram
+                        get_disk_size
+                        echo "Creating machine $1 with $ram mb ram and $diskS gb of disk space"
+                        ssh $user@vm "/qemu/bin/citv createvm $1 $ram $diskS $ch 1 1>/dev/null"
+                        #echo "Booting $1"
+                        #read -p "What drive do you want to boot to?" drive
+                        #ssh $user@vm "/qemu/bin/citv bootvm $1 $drive"
+                        going=1
+                else
+                        echo "Aha try again"
+                fi
+        done
+fi
