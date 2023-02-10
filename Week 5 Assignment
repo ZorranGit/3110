@@ -6,7 +6,6 @@
 6. egrep 'ux$' /usr/share/dict/words => 25      25     189
 7. egrep -E '^b.*zz|^s.*zz' /usr/share/dict/words => 39      39     344
 8. egrep '^((.)(.)\3\2|(.)(.)(.)\5\4)$' /usr/share/dict/words => 23      23     130
-8. egrep '^((.)(.)(.)\4\3\2|(.)(.)\6\5)$' /usr/share/dict/words => 9       9      47
 9. egrep '^((.)(.)(.)\4\3\2|(.)(.)(.)(.)\7\6\5)$' /usr/share/dict/words => 2       2      15
 10. grep -iE '[^aeiou]*a[^aeiou]*e[^aeiou]*i[^aeiou]*o[^aeiou]*u[^aeiou]*$' /usr/share/dict/words => 3       3      33
 11. egrep '([a-z])\1([a-z])\2([a-z])\3' /usr/share/dict/words => 5       5      62
