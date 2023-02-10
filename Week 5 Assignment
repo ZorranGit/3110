@@ -1,13 +1,13 @@
 1. egrep "^foo.*s$" /usr/share/dict/words => 51      51     542
 2. egrep 'ijk' /usr/share/dict/words => 2       2      20
 3. egrep -E 'gically|pilot' /usr/share/dict/words => 31      31     360
-4. egrep -E 'a{4} |e{4} |i{4} |o{4} |u{4}' /usr/share/dict/words => 0       0       0
+4. egrep -E 'a{4} |e{4} |i{4} |o{4} |u{4}' /usr/share/dict/words => 39      39     394
 5. egrep '^....................$' /usr/share/dict/words => 10      10     210
 6. egrep 'ux$' /usr/share/dict/words => 25      25     189
-7. egrep -E '^b.*zz|^s.*zz' /usr/share/dict/words => 39      39     344
-8. egrep '^((.)(.)\3\2|(.)(.)(.)\5\4)$' /usr/share/dict/words => 23      23     130
+7. egrep "^(b|s).*zz" /usr/share/dict/words => 35      35     308
+8. egrep "^(.)(.).\2\1$" /usr/share/dict/words => 15      15      90
 9. egrep '^((.)(.)(.)\4\3\2|(.)(.)(.)(.)\7\6\5)$' /usr/share/dict/words => 2       2      15
 10. grep -iE '[^aeiou]*a[^aeiou]*e[^aeiou]*i[^aeiou]*o[^aeiou]*u[^aeiou]*$' /usr/share/dict/words => 3       3      33
 11. egrep '([a-z])\1([a-z])\2([a-z])\3' /usr/share/dict/words => 5       5      62
 12. egrep "'.*[^s]$" /usr/share/dict/words => 86      86     629
-13. egrep "^[[:lower:]][[:lower:]]$" /usr/share/dict/words => 112     112     336
+13. egrep "^[[:lower:]][[:lower:]]$" /usr/share/dict/words => 62      62     186
