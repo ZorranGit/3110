@@ -1,0 +1,72 @@
+#!/bin/bash
+
+function main
+{
+if [ -f "$1" ]
+then
+        echo "Exists"
+        go=0
+        menu
+else
+        echo "./week6.sh {file}"
+fi
+}
+
+function menu
+{
+        while [[ $go = 0 ]]
+        do
+                read -p $'\nWhat do you want to do? \n Option 1: Dump all unique invalid username logins \n Option 2: Dump Unique Ips \n Option 3: Display all loged in users in time \n Option 4: Quit Script \n' ansboi
+                if [[ $ansboi = 1 ]]
+                then
+                        go=1
+                        Opt1
+                elif [[ $ansboi = 2 ]]
+                then
+                        go=1
+                        Opt2
+                elif [[ $ansboi = 3 ]]
+                then
+                        go=1
+                        Opt3
+                elif [[ $ansboi = 4 ]]
+                then
+                        Opt4
+                else
+                        echo "Error, Not a valid Value"
+                fi
+        done
+}
+
+function Opt1
+{
+        if [[ $go = 1 ]]
+        then
+                zcat $file | grep "Failed password" | grep -v COMMAND | awk '{print $9}' | sort -u > users.txt
+        fi
+}
+
+function Opt2
+{
+        if [[ $go = 1 ]]
+        then
+                zcat $file | egrep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" | sed 's/auth.log.2://g' | sort -u -n > ips.txt
+        fi
+}
+
+function Opt3
+{
+        if [[ $go = 1 ]]
+        then
+                read -p "What month do you want to check for?" Month
+                read -p "What Day do you want to check for?" Day
+                zcat $file | grep -E "Jan 31 (11:[0-1][0-5]:[0-5][0-9])" | grep "Failed password for invalid user" | awk '{ print $11 }' | sort -u > early_users.txt
+        fi
+}
+
+function Opt4
+{
+        go=1
+}
+file=$1
+main $1
