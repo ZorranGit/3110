@@ -1,0 +1,57 @@
+---
+- name: Create users for given groups
+  hosts: localhost
+  become: yes
+
+  vars:
+    simpson_users:
+      - homer
+      - marge
+      - bart
+      - lisa
+      - maggie
+    flintstone_users:
+      - fred
+      - wilma
+      - pebbles
+    rubble_users:
+      - barney
+      - betty
+      - bambam
+
+  tasks:
+    - name: Create simpson group
+      group:
+        name: simpson
+        state: present
+
+    - name: Create flintstone group
+      group:
+        name: flintstone
+        state: present
+
+    - name: Create rubble group
+      group:
+        name: rubble
+        state: present
+
+    - name: Create simpson users
+      user:
+        name: "{{ item }}"
+        group: simpson
+        state: present
+      loop: "{{ simpson_users }}"
+
+    - name: Create flintstone users
+      user:
+        name: "{{ item }}"
+        group: flintstone
+        state: present
+      loop: "{{ flintstone_users }}"
+
+    - name: Create rubble users
+      user:
+        name: "{{ item }}"
+        group: rubble
+        state: present
+      loop: "{{ rubble_users }}"
