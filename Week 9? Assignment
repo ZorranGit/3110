@@ -123,3 +123,17 @@
         - { name: 'simpson', last_person: 'maggie' }
         - { name: 'flintstone', last_person: 'pebbles' }
         - { name: 'rubble', last_person: 'bambam' }
+
+
+
+    - name: createfiles
+      become: true
+      ansible.builtin.file:
+        path: "/work/{{ item.key }}/{{ item.value }}"
+        state: touch
+        owner: "{{ item.key }}"
+        group: "{{ item.value }}"
+        mode: u+rwx,g+rwx,o-rwx
+        modification_time: preserve
+        access_time: preserve
+      loop:
