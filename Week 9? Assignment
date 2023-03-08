@@ -1,60 +1,125 @@
 ---
-- name: Create users for given groups
-  hosts: localhost
-  become: yes
-
+- name: Setup
+  hosts: TestMachines
+  remote_user: d00417722
   vars:
-    simpson_users:
-      - homer
-      - marge
-      - bart
-      - lisa
-      - maggie
-    flintstone_users:
-      - fred
-      - wilma
-      - pebbles
-    rubble_users:
-      - barney
-      - betty
-      - bambam
+    password: "UserPass1!"
+    groups:
+      - name: simpson
+        users:
+        - homer
+        - marge
+        - bart
+        - lisa
+        - maggie
+        last_person: maggie
+      - name: flintstone
+        users:
+        - fred
+        - wilma
+        - pebbles
+        last_person: pebbles
+      - name: rubble
+        users:
+        - barney
+        - betty
+        - bambam
+        last_person: bambam
 
   tasks:
+    - name: umask
+      become: true
+      lineinfile:
+        path: "/etc/skel/.bashrc"
+        line: "umask 007"
+        state: present
+        insertbefore: EOF
+
     - name: Create simpson group
+      become: true
       group:
         name: simpson
         state: present
 
     - name: Create flintstone group
+      become: true
       group:
         name: flintstone
         state: present
 
     - name: Create rubble group
+      become: true
       group:
         name: rubble
         state: present
 
+    - name: Create individual groups
+      become: true
+      group:
+        name: "{{ item }}"
+      with_items:
+        - homer
+        - marge
+        - bart
+        - lisa
+        - maggie
+        - fred
+        - wilma
+        - pebbles
+        - barney
+        - betty
+        - bambam
+
     - name: Create simpson users
+      become: true
       user:
         name: "{{ item }}"
-        group: simpson
         state: present
-        password: simppass!
-      loop: "{{ simpson_users }}"
+        group: "{{ item }}"
+        groups: simpson
+        password: "{{ password | password_hash('sha512') }}"
+      with_items:
+        - homer
+        - marge
+        - bart
+        - lisa
+        - maggie
 
     - name: Create flintstone users
+      become: true
       user:
         name: "{{ item }}"
-        group: flintstone
         state: present
-        password: fintpass!
-      loop: "{{ flintstone_users }}"
+        group: "{{ item }}"
+        groups: flintstone
+        password: "{{ password | password_hash('sha512') }}"
+      with_items:
+        - fred
+        - wilma
+        - pebbles
 
     - name: Create rubble users
+      become: true
       user:
         name: "{{ item }}"
-        group: rubble
         state: present
-        password: rubblepass!
-      loop: "{{ rubble_users }}"
+        group: "{{ item }}"
+        groups: rubble
+        password: "{{ password | password_hash('sha512') }}"
+      with_items:
+        - barney
+        - betty
+        - bambam
+
+    - name: dirmake
+      become: true
+      file:
+        path: "/work/{{ item.name }}"
+        state: directory
+        mode: "0770"
+        owner: "{{ item.last_person }}"
+        group: "{{ item.name }}"
+      with_items:
+        - { name: 'simpson', last_person: 'maggie' }
+        - { name: 'flintstone', last_person: 'pebbles' }
+        - { name: 'rubble', last_person: 'bambam' }
