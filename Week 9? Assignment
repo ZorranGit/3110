@@ -40,6 +40,7 @@
         name: "{{ item }}"
         group: simpson
         state: present
+        password: simppass!
       loop: "{{ simpson_users }}"
 
     - name: Create flintstone users
@@ -47,6 +48,7 @@
         name: "{{ item }}"
         group: flintstone
         state: present
+        password: fintpass!
       loop: "{{ flintstone_users }}"
 
     - name: Create rubble users
@@ -54,4 +56,5 @@
         name: "{{ item }}"
         group: rubble
         state: present
+        password: rubblepass!
       loop: "{{ rubble_users }}"
